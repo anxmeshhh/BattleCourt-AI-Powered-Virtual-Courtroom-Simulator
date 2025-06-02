@@ -1,0 +1,61 @@
+court_simulation/
+├── app.py                 # Flask backend
+├── static/
+│   ├── css/
+│   │   └── styles.css     # Vanilla CSS for styling
+│   └── js/
+│       └── script.js      # JavaScript for frontend logic
+└── templates/
+    └── index.html         # Main HTML file
+
+
+
+
+
+
+    legal_debate_simulator/
+├── app.py                  # Main Flask application (updated)
+├── requirements.txt        # Python dependencies
+├── .env                    # Environment variables
+├── static/
+│   ├── css/
+│   │   └── style.css       # Custom CSS styles
+│   └── js/
+│       └── script.js       # Client-side JavaScript
+└── templates/
+    ├── base.html           # Base template
+    ├── index.html          # Home page
+    ├── debate.html         # Debate interface
+    └── conclusion.html     # Results page
+
+
+
+    indian_courtroom_simulation/
+├── app.py                    # Flask backend logic with dynamic response generation
+├── templates/                # HTML templates for the UI
+│   ├── auth.html            # Login and registration page
+│   ├── dashboard.html       # User dashboard with stats and recent cases
+│   ├── case_selection.html  # Case selection and configuration page
+│   ├── courtroom.html       # Main courtroom simulation interface
+│   └── case_summary.html    # Case summary and verdict page
+├── static/                   # Static files for styling and uploads
+│   ├── styles.css           # CSS for courtroom-themed styling
+│   └── uploads/             # Directory for uploaded evidence files
+├── courtroom.db              # SQLite database for users, cases, sessions, etc.
+├── legal_data.json           # JSON file with Indian Constitution articles, laws, and case law
+└── README.md                 # Project documentation with setup and usage instructions
+
+
+
+
+    courtroom_simulator/
+├── .env
+├── app.py
+├── static/
+│   ├── index.html
+│   ├── styles.css
+│   └── gavel.mp3
+├── templates/
+├── uploads/
+├── database.db
+└── requirements.txt

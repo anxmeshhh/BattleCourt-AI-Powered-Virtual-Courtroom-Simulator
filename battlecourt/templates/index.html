@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supreme Court of India - Courtroom Simulator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="landing-container">
+        <div class="header-section">
+            <div class="emblem">⚖️</div>
+            <h1>Supreme Court of India</h1>
+            <h2>AI-Powered Courtroom Simulator</h2>
+            <p class="subtitle">Experience authentic legal proceedings with advanced AI representation</p>
+        </div>
+
+        <div class="setup-form">
+            <form id="trial-setup-form">
+                <div class="form-section">
+                    <h3>📋 Case Selection</h3>
+                    <div class="case-grid">
+                        {% for case in case_types %}
+                        <div class="case-card" onclick="selectCase({{ loop.index0 }})">
+                            <input type="radio" name="case_index" value="{{ loop.index0 }}" id="case-{{ loop.index0 }}" {% if loop.index0 == 0 %}checked{% endif %}>
+                            <label for="case-{{ loop.index0 }}">
+                                <div class="case-title">{{ case.title }}</div>
+                                <div class="case-description">{{ case.description }}</div>
+                                <div class="case-meta">
+                                    <span class="complexity complexity-{{ case.complexity.lower() }}">{{ case.complexity }}</span>
+                                    <span class="duration">{{ case.estimated_duration }}</span>
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-section">
+                        <h3>👨‍💼 Your Role</h3>
+                        <div class="role-selection">
+                            <div class="role-option">
+                                <input type="radio" name="role" value="Prosecutor" id="prosecutor" checked>
+                                <label for="prosecutor">
+                                    <div class="role-icon">⚔️</div>
+                                    <div class="role-title">Prosecutor</div>
+                                    <div class="role-desc">Represent the state and prove guilt</div>
+                                </label>
+                            </div>
+                            <div class="role-option">
+                                <input type="radio" name="role" value="Defense Attorney" id="defense">
+                                <label for="defense">
+                                    <div class="role-icon">🛡️</div>
+                                    <div class="role-title">Defense Attorney</div>
+                                    <div class="role-desc">Defend the accused and prove innocence</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>🎭 Lawyer Personality</h3>
+                        <div class="tone-grid">
+                            <div class="tone-section">
+                                <h4>Your Tone</h4>
+                                <select name="user_tone" id="user-tone">
+                                    {% for tone, description in lawyer_tones.items() %}
+                                    <option value="{{ tone }}" {% if tone == 'serious' %}selected{% endif %}>
+                                        {{ tone.title() }} - {{ description.split(',')[0] }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="tone-section">
+                                <h4>AI Opponent Tone</h4>
+                                <select name="ai_tone" id="ai-tone">
+                                    {% for tone, description in lawyer_tones.items() %}
+                                    <option value="{{ tone }}" {% if tone == 'aggressive' %}selected{% endif %}>
+                                        {{ tone.title() }} - {{ description.split(',')[0] }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>⚙️ Trial Settings</h3>
+                    <div class="settings-row">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="legal_help" value="true" checked>
+                            <span class="checkmark">✓</span>
+                            Enable Legal Advisory System
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="start-trial-btn">
+                    <span class="btn-icon">🏛️</span>
+                    Commence Trial Proceedings
+                </button>
+            </form>
+        </div>
+
+        <div id="case-preview" class="case-preview" style="display: none;">
+            <h3>📄 Case Brief</h3>
+            <div id="case-details"></div>
+            <div class="proceed-section">
+                <button onclick="proceedToCourtroom()" class="proceed-btn">
+                    Enter Courtroom →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedCaseIndex = 0;
+        let trialData = null;
+
+        function selectCase(index) {
+            selectedCaseIndex = index;
+            document.querySelector(`input[name="case_index"][value="${index}"]`).checked = true;
+        }
+
+        document.getElementById('trial-setup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitBtn = e.target.querySelector('.start-trial-btn');
+            
+            submitBtn.innerHTML = '<span class="btn-icon">⏳</span> Preparing Courtroom...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/start_trial', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    trialData = data;
+                    showCasePreview(data);
+                } else {
+                    alert('Error starting trial: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                submitBtn.innerHTML = '<span class="btn-icon">🏛️</span> Commence Trial Proceedings';
+                submitBtn.disabled = false;
+            }
+        });
+
+        function showCasePreview(data) {
+            const preview = document.getElementById('case-preview');
+            const details = document.getElementById('case-details');
+            
+            details.innerHTML = `
+                <div class="case-info">
+                    <h4>${data.case}</h4>
+                    <p><strong>Background:</strong> ${data.case_background}</p>
+                    <p><strong>Your Role:</strong> ${data.user_role}</p>
+                    <p><strong>Opposing Counsel:</strong> ${data.ai_role}</p>
+                    <p><strong>Estimated Duration:</strong> ${data.total_rounds} rounds</p>
+                </div>
+            `;
+            
+            preview.style.display = 'block';
+            preview.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function proceedToCourtroom() {
+            // Store trial data in sessionStorage
+            sessionStorage.setItem('trialData', JSON.stringify(trialData));
+            window.location.href = '/courtroom';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courtroom - Supreme Court of India</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='courtroom.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="courtroom-container">
+        <!-- Header -->
+        <div class="courtroom-header">
+            <div class="court-emblem">⚖️</div>
+            <div class="case-info">
+                <h1 id="case-title">Loading Case...</h1>
+                <div class="case-meta">
+                    <span id="round-counter">Round 1 of 8</span>
+                    <span class="separator">•</span>
+                    <span id="user-role-display">Your Role</span>
+                </div>
+            </div>
+            <div class="case-strength">
+                <div class="strength-bar">
+                    <div class="prosecution-bar" id="prosecution-strength"></div>
+                    <div class="defense-bar" id="defense-strength"></div>
+                </div>
+                <div class="strength-labels">
+                    <span>Prosecution</span>
+                    <span>Defense</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Courtroom Layout -->
+        <div class="courtroom-layout">
+            <!-- Judge Section -->
+            <div class="judge-section">
+                <div class="judge-bench">
+                    <div class="judge-avatar">👨‍⚖️</div>
+                    <h3>Hon'ble Judge</h3>
+                </div>
+                <div class="judge-comments" id="judge-comments">
+                    <div class="comment-placeholder">Awaiting judicial observations...</div>
+                </div>
+            </div>
+
+            <!-- Counsel Tables -->
+            <div class="counsel-area">
+                <div class="prosecution-section">
+                    <div class="counsel-header">
+                        <div class="counsel-avatar">⚔️</div>
+                        <h3>Prosecution</h3>
+                    </div>
+                    <div class="counsel-chat" id="prosecution-chat">
+                        <div class="chat-placeholder">Prosecution arguments will appear here...</div>
+                    </div>
+                </div>
+
+                <div class="defense-section">
+                    <div class="counsel-header">
+                        <div class="counsel-avatar">🛡️</div>
+                        <h3>Defense</h3>
+                    </div>
+                    <div class="counsel-chat" id="defense-chat">
+                        <div class="chat-placeholder">Defense arguments will appear here...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jury Section -->
+            <div class="jury-section">
+                <div class="jury-header">
+                    <div class="jury-avatar">👥</div>
+                    <h3>Jury</h3>
+                </div>
+                <div class="jury-reactions" id="jury-reactions">
+                    <div class="reaction-placeholder">Jury observations will appear here...</div>
+                </div>
+            </div>
+
+            <!-- Evidence & Witnesses -->
+            <div class="evidence-section">
+                <div class="evidence-panel">
+                    <h4>📋 Evidence</h4>
+                    <div id="evidence-list" class="evidence-list">
+                        <div class="loading">Loading evidence...</div>
+                    </div>
+                </div>
+                <div class="witness-panel">
+                    <h4>👤 Witnesses</h4>
+                    <div id="witness-list" class="witness-list">
+                        <div class="loading">Loading witnesses...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Input Section -->
+        <div class="input-section" id="input-section">
+            <div class="input-header">
+                <h3>Your Turn</h3>
+                <div class="action-selector">
+                    <select id="action-type">
+                        <option value="statement">Present Argument</option>
+                        <option value="objection">Raise Objection</option>
+                        <option value="cross_examination">Cross-Examine</option>
+                        <option value="evidence">Present Evidence</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-area">
+                <textarea id="user-statement" placeholder="Enter your legal argument, objection, or question..." rows="4"></textarea>
+                <div class="input-controls">
+                    <button id="submit-btn" onclick="submitTurn()">
+                        <span class="btn-icon">📝</span>
+                        Submit Argument
+                    </button>
+                    <div class="character-count">
+                        <span id="char-count">0</span>/1000
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verdict Section -->
+        <div class="verdict-section" id="verdict-section" style="display: none;">
+            <div class="verdict-header">
+                <h2>⚖️ Final Verdict</h2>
+            </div>
+            <div class="verdict-content" id="verdict-content">
+                <!-- Verdict will be populated here -->
+            </div>
+            <div class="verdict-actions">
+                <button onclick="startNewTrial()" class="new-trial-btn">Start New Trial</button>
+                <button onclick="reviewCase()" class="review-btn">Review Case</button>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner">⚖️</div>
+                <p>AI is formulating response...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Help Panel -->
+    <div class="legal-help-panel" id="legal-help-panel">
+        <div class="help-header">
+            <h3>📚 Legal Advisory</h3>
+            <button class="close-help" onclick="toggleLegalHelp()">×</button>
+        </div>
+        <div class="help-content" id="help-content">
+            <div class="help-placeholder">Legal guidance will appear here when available...</div>
+        </div>
+    </div>
+
+    <!-- Legal Help Toggle Button -->
+    <button class="help-toggle-btn" id="help-toggle-btn" onclick="toggleLegalHelp()">
+        <span class="help-icon">💡</span>
+        <span class="help-text">Legal Help</span>
+    </button>
+
+    <script src="{{ url_for('static', filename='courtroom.js') }}"></script>
+</body>
+</html>
